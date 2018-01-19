@@ -12,9 +12,9 @@ function calendar([day, month, year]) {
     html += " <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>\n";
 
     //Prints prev month days
-    if (firstOfMonth.getDay() > 0) {
+    // if (firstOfMonth.getDay() > 0) {
         html += ' <tr>';
-    }
+    // }
     for (let i = calendarStartDay.getDay(); i < firstOfMonth.getDay(); i++) {
         html += '<td class="prev-month">' + (calendarStartDay.getDate() + i) + '</td>';
     }
@@ -51,3 +51,4 @@ function calendar([day, month, year]) {
     html += '</table>'
     return html;
 }
+calendar([12,5,2018])
