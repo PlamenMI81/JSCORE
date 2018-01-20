@@ -20,4 +20,8 @@ function insideVolume(arr) {
     }
 }
 insideVolume([8, 20, 22]);
-insideVolume([13.1, 50, 31.5, 50, 80, 50, -5, 18, 43]);
+insideVolume([
+            13.1, 50, 31.5,
+            50, 80, 50,
+            -5, 18, 43
+]);
