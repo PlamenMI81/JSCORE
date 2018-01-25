@@ -12,12 +12,12 @@ function templateFormat(strArr) {
   </answer>\n`;
 
     }
-    xml += "</quiz>";
+    xml += '</quiz>';
     return xml;
 }
 
-console.log(templateFormat(["Dry ice is a frozen form of which gas?",
-    "Carbon Dioxide",
-    "What is the brightest star in the night sky?",
-    "Sirius"]
+console.log(templateFormat(['Dry ice is a frozen form of which gas?',
+    'Carbon Dioxide',
+    'What is the brightest star in the night sky?',
+    'Sirius']
 ));

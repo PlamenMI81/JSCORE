@@ -2,24 +2,24 @@ function cooking(arr) {
     let number = Number(arr[0]);
 
     function chop(number) {
-        return number /= 2;
+        return number / 2;
     }
 
     function dice(number) {
-        return number = Math.sqrt(number);
+        return Math.sqrt(number);
     }
 
     function spice(number) {
-        return number += 1;
+        return number + 1;
     }
 
     function bake(number) {
-        return number *= 3;
+        return number * 3;
     }
 
     function fillet(number) {
         let percent = number * 0.2;
-        return number -= percent;
+        return number - percent;
     }
 
     for (let i = 1; i < 6; i++) {
@@ -43,4 +43,4 @@ function cooking(arr) {
     }
 }
 
-cooking([9, 'dice', 'spice', 'chop', 'bake', 'fillet']);
+cooking([9, "dice", "spice", "chop", "bake", "fillet"]);

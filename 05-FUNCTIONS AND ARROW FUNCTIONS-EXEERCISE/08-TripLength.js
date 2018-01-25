@@ -1,5 +1,5 @@
 function trip(arr) {
-    [x1, y1, x2, y2, x3, y3] = arr;
+    let [x1, y1, x2, y2, x3, y3] = arr;
 
     function distance(a1, b1, a2, b2) {
         return Math.sqrt((a1 - a2) ** 2 + (b1 - b2) ** 2);

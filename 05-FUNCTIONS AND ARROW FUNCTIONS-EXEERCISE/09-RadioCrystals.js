@@ -4,7 +4,7 @@ function radioCrystals(arr) {
 
     function transportAndWash(crystalThickness) {
         console.log("Transporting and washing");
-        return crystalThickness = Math.floor(crystalThickness);
+        return  Math.floor(crystalThickness);
     }
 
     function cut(crystalThickness) {
@@ -53,7 +53,7 @@ function radioCrystals(arr) {
 
     function xray(crystalThickness) {
         console.log(`X-ray x1`);
-        return crystalThickness+=1;
+        return crystalThickness+1;
     }
 
     for (let i = 1; i < arr.length; i++) {

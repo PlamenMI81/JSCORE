@@ -1,5 +1,5 @@
 function validity(arr) {
-    [x1, y1, x2, y2] = arr;
+    let [x1, y1, x2, y2] = arr;
 
     function distance(x1, y1, x2, y2) {
         let dist= Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);

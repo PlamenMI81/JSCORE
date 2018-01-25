@@ -1,4 +1,4 @@
-const now = require("performance-now")
+const now = require("performance-now");
 
 function dnaHelix(size) {
     function row(i, s1, s2) {
@@ -8,8 +8,10 @@ function dnaHelix(size) {
             console.log(`*${s1}--${s2}*`);
         } else if (i % 4 === 2) {
             console.log(`${s1}----${s2}`);
-        } else
+        } else{
             console.log(`*${s1}--${s2}*`);
+        }
+
     }
 
     let sequence = "ATCGTTAGGG";
@@ -18,10 +20,13 @@ function dnaHelix(size) {
         let s1 = sequence[charIdx];
         let s2 = sequence[charIdx + 1];
         row(i, s1, s2);
-        if (charIdx === 8)
+        if (charIdx === 8){
             charIdx = 0;
-        else
+        }
+        else{
             charIdx += 2;
+        }
+
     }
 }
 

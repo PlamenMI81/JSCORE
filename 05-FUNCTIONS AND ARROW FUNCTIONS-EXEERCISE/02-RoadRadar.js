@@ -1,5 +1,5 @@
 function roarRadar(arr) {
-    [currentSpeed, area] = arr;
+    let [currentSpeed, area] = arr;
     function getLimit(zone) {
         switch (zone){
             case "motorway":return 130;
