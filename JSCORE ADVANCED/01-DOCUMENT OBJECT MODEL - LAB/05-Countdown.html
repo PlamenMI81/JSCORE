@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Countdown</title>
+    <meta charset="UTF-8">
+    <title>Countdown</title>
 </head>
 <body>
-	<input type="text" id="time" style="border:3px solid blue; text-align:center; font-size:2em;" disabled="true"/>
-	<script>
-			window.onload = function() { countdown(600); };
-			function countdown(time) {
-					
-      }
-			
-	</script>
+<input type="text" id="time" style="border:3px solid blue; text-align:center; font-size:2em;" disabled="true"/>
+<script>
+    window.onload = function () {
+        countdown(600);
+    };
+
+    function countdown(time) {
+        setInterval(calc, 1000);
+        function calc() {
+            time--;
+            let minutes = Math.floor(time / 60);
+            let sec = time % 60;
+            document.getElementById('time').value = Math.trunc(time / 60) +
+            ':' + ("0" + (time % 60)).slice(-2);
+        }
+    }
+</script>
 </body>
 </html>
