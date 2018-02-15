@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mouse Gradient</title>
+</head>
+<body>
+<html>
+<head>
+    <title>Mouse in Gradient</title>
+    <link rel="stylesheet" href="gradient.css" />
+</head>
+<body onload="attachGradientEvents()">
+<div id="gradient-box">
+    <div id="gradient">Click me!</div>
+</div>
+<div id="result"></div>
+<script>
+    function attachGradientEvents() {
+        let div=document.getElementById('gradient');
+        let result=document.getElementById('result');
+        let perc=0;
+        div.addEventListener('mousemove',(event)=>{
+            let x=event.offsetX;
+            perc=x/(event.target.clientWidth-1)*100;
+            result.style.display='block';
+            result.textContent=Math.floor(perc)+'%';
+        });
+        div.addEventListener('mouseout',()=>{
+            result.style.display='none';
+        });
+    }
+</script>
+</body>
+</html>
+
+</body>
+</html>
