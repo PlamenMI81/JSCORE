@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        #timer {
+            font-size: 5em;
+        }
+    </style>
+</head>
+<body>
+<div id="timer">
+    <span id="hours" class="timer">00</span>:
+    <span id="minutes" class="timer">00</span>:
+    <span id="seconds" class="timer">00</span>
+    <button id="start-timer">Start</button>
+    <button id="stop-timer">Stop</button>
+</div>
+<script>
+  window.onload = function () { timer()}
+
+  function timer () {
+    let sec = $('#seconds')
+    let min = $('#minutes')
+    let hours = $('#hours')
+    let startBtn = $('#start-timer')
+    let stopBtn = $('#stop-timer')
+    let interval
+    let curMin = 0
+    let curHour = 0
+    startBtn.on('click', () => {
+      interval = setInterval(step, 1000)
+      startBtn.off('click')
+    })
+    stopBtn.on('click', () => {
+      clearInterval(interval)
+      startBtn.on('click', () => {
+        interval = setInterval(step, 1000)
+        startBtn.off('click')
+      })
+    })
+
+    function step () {
+      let currSec = Number($(sec).text())
+      currSec++
+      if (currSec > 59) {
+        currSec = 0
+        curMin++
+        if (curMin > 59) {
+          curMin=0
+          curHour++
+        }
+      }
+      $(sec).text((`0${currSec}`).slice(-2))
+      $(min).text((`0${curMin}`).slice(-2))
+      $(hours).text((`0${curHour}`).slice(-2))
+    }
+  }
+</script>
+</body>
+</html>
