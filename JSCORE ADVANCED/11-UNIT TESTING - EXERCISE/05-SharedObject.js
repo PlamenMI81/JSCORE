@@ -1,5 +1,5 @@
 let expect=require('chai').expect
-//let jsDom=require('jsdom-global')()
+let jsDom=require('jsdom-global')()
 let $=require('jquery')
 
 document.body.innerHTML=`<div id="wrapper">
