@@ -1,5 +1,5 @@
 function getInfo() {
-  $('#buses').empty().hide()
+  $('#buses').empty()
   $('#stopName').text('')
   let stopId=$('#stopId').val()
   const URL=`https://judgetests.firebaseio.com/businfo/${stopId}.json`
@@ -14,9 +14,9 @@ function getInfo() {
     $('#stopName').text(res.name)
 
     for (let bus in res.buses) {
-      $('<li>').text(`Bus ${bus} arrives in ${res.buses[bus]} minutes`).appendTo($('#buses'))
+      let li=$('<li>').text(`Bus ${bus} arrives in ${res.buses[bus]} minutes`)
+      li.appendTo($('#buses'))
     }
-    $('#buses').show( "slide", {direction: "left" }, 2000 )
   }
   function handleError (err) {
     $('#stopName').text('Error')
