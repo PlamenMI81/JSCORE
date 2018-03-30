@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secret Knock</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="code.js"></script>
+    <style>
+        hr {
+            display: none;
+            margin-top: 20px;
+            border: 0;
+            height: 0; /* Firefox... */
+            box-shadow: 0 0 10px 1px brown;
+        }
+
+        button {
+            color: white;
+            background-color: brown;
+            border: none;
+            border-radius: 3px;
+            min-height: 30px;
+            margin-left: 3em;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: #b86600;
+        }
+
+        button:active, button:focus {
+            outline: 0;
+        }
+    </style>
+</head>
+<body>
+<button id="knock">Start knocking</button>
+<ul id="answers" style="display: none"></ul>
+</body>
+</html>
