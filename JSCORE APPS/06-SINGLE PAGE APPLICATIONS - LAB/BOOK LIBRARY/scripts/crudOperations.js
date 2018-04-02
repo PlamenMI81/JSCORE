@@ -86,10 +86,21 @@ function saveAuthInSession (userInfo) {
 }
 
 function logoutUser () {
-  sessionStorage.clear()
-  showHomeView()
-  showHideMenuLinks()
-  showInfo('Logout successful.')
+  $.ajax({
+    method: 'POST',
+    url: BASE_URL + 'user/' + APP_KEY + '/_logout',
+    headers: {Authorization: 'Kinvey ' + sessionStorage.getItem('authToken')},
+    success: (res) => {
+      sessionStorage.clear()
+      showHomeView()
+      showHideMenuLinks()
+      showInfo('Logout successful.')
+    },
+    error: handleAjaxError()
+  })
+
+
+
 }
 
 function signInUser (res, message) {
@@ -136,8 +147,8 @@ function displayPaginationAndBooks (books) {
 
 function handleAjaxError (response) {
   let errorMsg = JSON.stringify(response)
-  if (response.readyState === 0)
-    errorMsg = 'Cannot connect due to network error.'
+  // if (response.readyState === 0)
+  //   errorMsg = 'Cannot connect due to network error.'
   if (response.responseJSON && response.responseJSON.description)
     errorMsg = response.responseJSON.description
   showError(errorMsg)

@@ -1,9 +1,9 @@
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     font-family: 'Open Sans', sans-serif;
     color: #333333;
     height: 100%;
@@ -36,36 +36,34 @@ body{
     transition: ease-in .3s;
 }
 
-.menu-item:hover{
+.menu-item:hover {
     color: #00bbbb;
 }
-
 
 main > section {
     display: none;
     padding: 20px 5px;
 }
 
-
-.title{
+.title {
     text-align: center;
     font-size: 62px;
 }
 
-.body-text{
+.body-text {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 5px;
 }
 
-.titleForm{
+.titleForm {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 10px;
     padding: 10px;
 }
 
-.form{
+.form {
     margin: 0 auto;
     background: #333333;
     text-align: center;
@@ -74,12 +72,18 @@ main > section {
     color: white;
 }
 
-input{
+#loggedInUser {
+    background: #858585;
+    border-radius: 5px;
+    cursor:default;
+}
+
+input {
     border: none;
     box-shadow: none;
     background: none;
     outline: none;
-    color:white;
+    color: white;
     padding: 5px;
     margin: 20px;
     font: 16px 'Open Sans', sans-serif;
@@ -95,39 +99,67 @@ input{
     transition: .5s ease-in;
 }
 
-input[type=text]{
+#viewDetailsAd label{
+    font-weight: bold;
+    font-style: italic;
+}
+
+input[type=text] {
     color: white;
     font: 16px 'Open Sans', sans-serif;
 }
 
-input:focus{
+input:focus {
     border-color: #00bbbb;
 }
 
-input[type=button]{
+input[type=button] {
     border: 1px solid white;
     padding: 10px 25px;
     transition: all .2s ease-in-out;
 }
 
-input[type=button]:hover{
+input[type=button]:hover {
     background: #00bbbb;
     border-color: #00bbbb;
     transform: scale(1.1);
     cursor: pointer;
 }
 
+#buttonBack {
+    border: 1px solid #333333;
+    background: #333333;
+    padding: 10px 25px;
+    transition: all .2s ease-in-out;
+}
+
+#buttonBack:hover {
+    background: #00bbbb;
+    border-color: #00bbbb;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+a{
+    font-size: 20px;
+    text-decoration: none;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
 #loadingBox {
     background: #7CB3E9;
 }
+
 #infoBox {
     background: #393;
 }
+
 #errorBox {
     background: #F50;
 }
 
-table{
+table {
     margin: 0 auto;
     padding: 10px;
 }
@@ -140,16 +172,22 @@ table th {
 table td {
     padding: 5px 10px;
     background: #EEE;
+    width: auto;
 }
 
-.secondaryButton{
+td.min {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.secondaryButton {
     text-decoration: none;
     color: #333333;
     padding: 5px 10px;
     transition: all .2s ease-in-out;
 }
 
-.secondaryButton:hover{
+.secondaryButton:hover {
     cursor: pointer;
 }
 

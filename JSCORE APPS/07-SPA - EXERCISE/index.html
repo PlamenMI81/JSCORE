@@ -54,6 +54,7 @@
         </form>
     </section>
 
+    <section id="viewDetailsAd"></section>
     <section id="viewAds" class="viewAds">
         <h1 class="titleForm">Advertisements</h1>
         <div id="ads" class="ads">
@@ -91,6 +92,8 @@
             <div><input type="date" name="datePublished" required /></div>
             <div>Price:</div>
             <div><input type="number" step="0.01" name="price" required /></div>
+            <div>Image:</div>
+            <div><input type="text" name="image" required /></div>
             <div><input type="button" id="buttonCreateAd" value="Create" /></div>
         </form>
     </section>
@@ -100,6 +103,7 @@
         <form id="formEditAd" class="form">
             <div><input type="hidden" name="id" required /></div>
             <div><input type="hidden" name="publisher" required /></div>
+            <div><input type="hidden" name="viewCount" required /></div>
             <div>Title:</div>
             <div><input type="text" name="title" required /></div>
             <div>Description:</div>
@@ -108,6 +112,8 @@
             <div><input type="date" name="datePublished" required /></div>
             <div>Price:</div>
             <div><input type="number" step="0.01" name="price" required /></div>
+            <div>Image:</div>
+            <div><input type="text" name="image" required /></div>
             <div><input type="button" id="buttonEditAd" value="Edit" /></div>
         </form>
     </section>
