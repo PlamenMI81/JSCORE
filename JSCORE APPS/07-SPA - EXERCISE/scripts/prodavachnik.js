@@ -3,7 +3,11 @@ function startApp () {
   const APPID = 'kid_SJdF7CqcM'
   const APPSECRET = '393545d075134ca1b49177e6bd0a1a2c'
   attachEvents()
+  $('#viewHome >h1').hide()
+  $('#viewHome >p').hide()
   $('#viewHome').show()
+  $('#viewHome >h1').show(2000,()=>{$('#viewHome >p').show(2000)})
+
   toggleMenuItems()
 
   function attachEvents () {
@@ -50,13 +54,15 @@ function startApp () {
       $('a#linkLogout').show()
       $('a#linkCreateAd').show()
       $('a#linkListAds').show()
-      $('#loggedInUser').text('HELLO: ' + sessionStorage.getItem('user')).show()
+      $('#loggedInUser').show()
+      $('#userIcon').addClass("far fa-user fa-lg")
+      $('#userName').text(sessionStorage.getItem('user'))
       $('a#linkRegister').hide()
       $('a#linkLogin').hide()
     } else {
       $('a#linkLogin').show()
       $('a#linkRegister').show()
-      $('#loggedInUser').text('').hide()
+      $('#loggedInUser').hide()
       $('a#linkLogout').hide()
       $('a#linkCreateAd').hide()
       $('a#linkListAds').hide()
@@ -198,10 +204,11 @@ function startApp () {
             $('<td>').text(e.price),
             $('<td>').text(e.dateOfpublishing))
         let linksTd = $('<td>')
-          .append($('<a href="#">&#9906</a>').on('click', () => readMore(e)))
+          .append($('<a href="#" title="Read more...">&#9906</a>').on('click', () => readMore(e)))
         if (sessionStorage.getItem('creator') === e._acl.creator) {
-          linksTd.append($('<a href="#">&#9931</a>').on('click', () => loadAdForEdit(e)))
-            .append($('<a href="#">&#9938</a>').on('click', () => deleteAd(e)))
+          linksTd
+            .append($('<a href="#" title="Edit...">&#9998</a>').on('click', () => loadAdForEdit(e)))
+            .append($('<a href="#" title="Delete">&#10006</a>').on('click', () => deleteAd(e)))
         }
         linksTd.appendTo(tr)
         tr.appendTo(table)
@@ -235,7 +242,7 @@ function startApp () {
           $('<label>').text('Views:'),
           $('<span>').text(e.viewCount + 1),
           $('<br>'),
-          $('<input type="button" id="buttonBack" value="BACK" />').on('click',()=>{
+          $('<input type="button" id="buttonBack" value="BACK &#8617;" />').on('click',()=>{
             $('section').hide()
             $('#viewAds').show()
             listAds()
