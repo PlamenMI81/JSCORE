@@ -41,7 +41,7 @@ footer {
 }
 
 .centered {
-    text-align: center;
+    /*text-align: center;*/
     vertical-align: middle;
 }
 
@@ -53,10 +53,9 @@ h1 {
 }
 
 .box {
-    text-align: left;
+    text-align: center;
     display: inline-block;
-    margin: auto;
-    margin-top: 20%;
+    margin: 20% auto auto;
     width: 250px;
 }
 
