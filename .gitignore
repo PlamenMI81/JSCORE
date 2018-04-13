@@ -39,6 +39,7 @@ Thumbs.db
 # IDE files #
 #############
 nbproject
+node_modules
 .~lock.*
 .buildpath
 .idea
