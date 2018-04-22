@@ -3,6 +3,10 @@ let auth = (() => {
     return sessionStorage.getItem('authtoken') !== null
   }
 
+  function getUsername () {
+    return sessionStorage.getItem('username')
+  }
+
   function saveSession (userData) {
     sessionStorage.setItem('authtoken', userData._kmd.authtoken)
     sessionStorage.setItem('username', userData.username)
@@ -27,6 +31,7 @@ let auth = (() => {
 
   return {
     isAuth,
+    getUsername,
     login,
     logout,
     register,
