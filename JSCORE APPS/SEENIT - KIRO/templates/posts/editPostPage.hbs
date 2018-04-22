@@ -10,13 +10,16 @@
         </div>
         <div class="submitArea formContainer">
             <form action="#/edit/post" method="post" id="editPostForm" class="submitForm">
-                <input type="hidden" name="postId" value="{{post._id}}"/>
+                <input type="hidden" name="postId" value="{{post._id}}" />
                 <label>Link URL:</label>
-                <input name="url" type="text" value="{{post.url}}">
+                <input name="url" type="text"
+                       value="{{post.url}}">
                 <label>Link Title:</label>
-                <input name="title" type="text" value="{{post.title}}">
+                <input name="title" type="text"
+                       value="{{post.title}}">
                 <label>Link Thumbnail Image (optional):</label>
-                <input name="imageUrl" type="text" value="{{post.imageUrl}}">
+                <input name="imageUrl" type="text"
+                       value="{{post.imageUrl}}">
                 <label>Description (optional):</label>
                 <textarea name="description">{{post.description}}</textarea>
                 <input id="btnEditPost" type="submit" value="Edit Post">
