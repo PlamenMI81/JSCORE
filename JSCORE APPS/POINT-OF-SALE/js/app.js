@@ -103,7 +103,7 @@ $(() => {
       let type = ctx.params['type']
       let qty = Number(ctx.params['qty'])
       let price = Number(ctx.params['price'])
-      if (type.length!==0 && /\d+\.\d+/.test(qty) && /\d+\.\d+/.test(price)) {
+      if (type.length !== 0 && /\d+\.\d+|\d+/.test(qty) && /\d+\.\d+|\d+/.test(price)) {
         entries.createEntry(type, qty, price, receiptId)
           .then(() => {
             notify.showInfo('Entry added')
@@ -119,7 +119,7 @@ $(() => {
         ctx.redirect('#/index')
         return
       }
-      entries.deleteEntry(ctx.params.entryId).then(()=>{
+      entries.deleteEntry(ctx.params.entryId).then(() => {
         notify.showInfo('Entry removed')
         ctx.redirect('#/home')
       })
@@ -137,10 +137,66 @@ $(() => {
         notify.showError('Must have one entry at least!')
         return
       }
-      receipts.commitReceipt(receiptId, productCount, total).then(()=>{
+      receipts.commitReceipt(receiptId, productCount, total).then(() => {
         notify.showInfo('Receipt checked out')
         ctx.redirect('#/home')
       })
+    })
+
+    this.get('#/overview', (ctx) => {
+      if (!auth.isAuth()) {
+        ctx.redirect('#/index')
+        return
+      }
+
+      let userId = sessionStorage.getItem('userId')
+      receipts.getMyReceipts(userId)
+        .then((myReceipts) => {
+          let total = 0
+          myReceipts.forEach((r) => {
+            r['date-time'] = formatDate(r._kmd.ect)
+            r.receiptId = r._id
+            total += r.total
+          })
+          ctx.total = total
+          ctx.receipts = myReceipts
+          ctx.username = auth.getUsername()
+          ctx.loadPartials({
+            menu: './tpl/common/menu.hbs',
+            footer: './tpl/common/footer.hbs',
+            'row-details': './tpl/receipt/row-details.hbs'
+          }).then(function () {
+            this.partial('./tpl/receipt/all.hbs')
+          })
+        })
+
+      function formatDate (dateISO) {
+        let dateTime=dateISO.split('T')
+        let date=dateTime[0]
+        let time=dateTime[1].split(':')
+        let hour=time[0]
+        let minutes=time[1]
+        return `${date} ${hour}:${minutes}`
+      }
+    })
+
+    this.get('#/receipt/details/:receiptId',(ctx)=>{
+      let id=ctx.params.receiptId
+      entries.getEntries(id)
+        .then((entries) => {
+          entries.forEach((e) => {
+            e.subTotal = (e.price * e.qty).toFixed(2)
+          })
+          ctx.entries = entries
+          ctx.username = auth.getUsername()
+          ctx.loadPartials({
+            menu: './tpl/common/menu.hbs',
+            footer: './tpl/common/footer.hbs',
+            'row-more': './tpl/receipt/row-more.hbs'
+          }).then(function () {
+            this.partial('./tpl/receipt/details.hbs')
+          })
+        })
     })
 
     function getWelcomePage (ctx) {
