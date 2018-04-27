@@ -2,22 +2,30 @@ $(() => {
   const app = Sammy('#main', function () {
     this.use('Handlebars', 'hbs')
 
-    this.get('#/login', getLoginPage)
-    this.get('#/register', getRegisterPage)
-    this.get('index.html', getLoginPage)
+    this.get('index.html', getWelcomePage)
+    this.get('#/index', getWelcomePage)
 
+    this.get('#/register', (ctx) => {
+      ctx.loadPartials({
+        header: './tpl/common/header.hbs',
+        footer: './tpl/common/footer.hbs',
+      }).then(function () {
+        this.partial('./tpl/forms/register.hbs')
+      })
+    })
     this.post('#/register', (ctx) => {
-      let username = ctx.params.username
-      let password = ctx.params.password
-      let repeatPass = ctx.params.repeatPass
+      let username = ctx.params['username']
+      let password = ctx.params['password']
+      let repeatPass = ctx.params['repeatPass']
 
-      if (username.length<5) {
-        notify.showError('Username should be at least 5 characters long and contain only english alphabet letters')
-      } else if (password.length===0) {
+      if (username.length < 5) {
+        notify.showError('Username should be at least 5 characters long')
+      } else if (password.length === 0) {
         notify.showError('Password shouldn\'t be empty')
       } else if (repeatPass !== password) {
         notify.showError('Passwords must match!')
       } else {
+        $(ctx.target).find('#btnRegister').prop('disabled', true)
         auth.register(username, password)
           .then((userData) => {
             auth.saveSession(userData)
@@ -25,296 +33,84 @@ $(() => {
             ctx.redirect('#/feed')
           })
           .catch(notify.handleError)
+          .always(() => {
+            $(ctx.target).find('#btnRegister').prop('disabled', false)
+          })
       }
     })
 
+    this.get('#/login', (ctx) => {
+      ctx.redirect('#/index')
+    })
     this.post('#/login', (ctx) => {
-      let username = ctx.params.username
-      let password = ctx.params.password
-
-      if (username === '' || password === '') {
-        notify.showError('All fields should be non-empty!')
-      } else {
-        auth.login(username, password)
-          .then((userData) => {
-            auth.saveSession(userData)
-            notify.showInfo('Login successful.')
-            ctx.redirect('#/feed')
-          })
-          .catch(notify.handleError)
-      }
+      let username = ctx.params['username']
+      let password = ctx.params['password']
+      $(ctx.target).find('#btnLogin').prop('disabled', true)
+      auth.login(username, password)
+        .then((userData) => {
+          auth.saveSession(userData)
+          notify.showInfo('Login successful!')
+          ctx.redirect('#/feed')
+        })
+        .catch(notify.handleError)
+        .always(() => {
+          $(ctx.target).find('#btnLogin').prop('disabled', false)
+        })
     })
 
     this.get('#/logout', (ctx) => {
       auth.logout()
         .then(() => {
           sessionStorage.clear()
-          ctx.redirect('#/login')
+          ctx.redirect('#/index')
         })
         .catch(notify.handleError)
     })
 
     this.get('#/feed', (ctx) => {
       if (!auth.isAuth()) {
-        ctx.redirect('#/login')
+        ctx.redirect('#/index')
         return
       }
-
-      feed.getAllFeeds()
-        .then((feeds) => {
-          feeds.forEach((p, i) => {
-            p.date = calcTime(p._kmd.ect)
-            p.isAuthor = p._acl.creator === sessionStorage.getItem('userId')
-          })
-
-          ctx.isAuth = auth.isAuth()
-          ctx.username = sessionStorage.getItem('username')
-          ctx.feeds = feeds
-
-          ctx.loadPartials({
-            header: './templates/header.hbs',
-            footer: './templates/footer.hbs',
-            navigation: './templates/navigation.hbs',
-            chirp: './templates/feed/chirp.hbs',
-          }).then(function () {
-            this.partial('./templates/feed/feed.hbs')
-          })
-        })
-        .catch(notify.handleError)
+      let chirpCountP = chirpsService.chirpCount(auth.getUsername())
+      let followingCountP = chirpsService.followingCount(auth.getUsername())
+      let followersCountP = chirpsService.followersCount(auth.getUsername())
+      Promise.all([chirpCountP, followingCountP, followersCountP]).then(([chirpCount, followingCount, followersCount]) => {
+        chirpsService.getSubsc(sessionStorage.getItem('userId')).then((userData) => {
+          let subsc = userData.subscriptions
+          chirpsService.chirpsBySubscription(subsc).then((chirps) => {
+            chirps.forEach(c => {
+              c.diff = calcTime(c._kmd.ect)
+            })
+            ctx.chirps = chirps
+            ctx.chirpsCount = chirpCount[0] ? chirpCount[0].subscriptions.length : '0'
+            ctx.followingCount = followingCount[0] ? followingCount[0].subscriptions.length : '0'
+            ctx.followersCount = followersCount[0] ? followersCount[0].subscriptions.length : '0'
+            ctx.username = auth.getUsername()
+            ctx.loadPartials({
+              chirp: './tpl/chirps/chirp.hbs',
+              menu: './tpl/common/menu.hbs',
+              header: './tpl/common/header.hbs',
+              footer: './tpl/common/footer.hbs',
+            }).then(function () {
+              this.partial('./tpl/chirps/feed.hbs')
+            })
+          }).catch(notify.handleError)
+        }).catch(notify.handleError)
+      })
     })
-    //
-    // this.get('#/create/post', (ctx) => {
-    //   if (!auth.isAuth()) {
-    //     ctx.redirect('#/home')
-    //     return
-    //   }
-    //
-    //   ctx.isAuth = auth.isAuth()
-    //   ctx.username = sessionStorage.getItem('username')
-    //
-    //   ctx.loadPartials({
-    //     header: './templates/common/header.hbs',
-    //     footer: './templates/common/footer.hbs',
-    //     navigation: './templates/common/navigation.hbs',
-    //   }).then(function () {
-    //     this.partial('./templates/posts/createPostPage.hbs')
-    //   })
-    // })
-    // this.post('#/create/post', (ctx) => {
-    //   if (!auth.isAuth()) {
-    //     ctx.redirect('#/home')
-    //     return
-    //   }
-    //
-    //   let author = sessionStorage.getItem('username')
-    //   let url = ctx.params.url
-    //   let imageUrl = ctx.params.imageUrl
-    //   let title = ctx.params.title
-    //   let description = ctx.params.description
-    //
-    //   if (title === '') {
-    //     notify.showError('Title is required!')
-    //   } else if (url === '') {
-    //     notify.showError('Url is required!')
-    //   } else if (!url.startsWith('http')) {
-    //     notify.showError('Url must be a valid link!')
-    //   } else {
-    //     posts.createPost(author, title, description, url, imageUrl)
-    //       .then(() => {
-    //         notify.showInfo('Post created.')
-    //         ctx.redirect('#/catalog')
-    //       })
-    //       .catch(notify.handleError)
-    //   }
-    // })
-    //
-    // this.get('#/edit/post/:postId', (ctx) => {
-    //   if (!auth.isAuth()) {
-    //     ctx.redirect('#/home')
-    //     return
-    //   }
-    //
-    //   let postId = ctx.params.postId
-    //
-    //   posts.getPostById(postId)
-    //     .then((post) => {
-    //       ctx.isAuth = auth.isAuth()
-    //       ctx.username = sessionStorage.getItem('username')
-    //       ctx.post = post
-    //
-    //       ctx.loadPartials({
-    //         header: './templates/common/header.hbs',
-    //         footer: './templates/common/footer.hbs',
-    //         navigation: './templates/common/navigation.hbs',
-    //       }).then(function () {
-    //         this.partial('./templates/posts/editPostPage.hbs')
-    //       })
-    //     })
-    // })
-    // this.post('#/edit/post', (ctx) => {
-    //   let postId = ctx.params.postId
-    //   let author = sessionStorage.getItem('username')
-    //   let url = ctx.params.url
-    //   let imageUrl = ctx.params.imageUrl
-    //   let title = ctx.params.title
-    //   let description = ctx.params.description
-    //
-    //   if (postIsValid(title, url)) {
-    //     posts.editPost(postId, author, title, description, url, imageUrl)
-    //       .then(() => {
-    //         notify.showInfo(`Post ${title} updated.`)
-    //         ctx.redirect('#/catalog')
-    //       })
-    //       .catch(notify.showError)
-    //   }
-    // })
-    //
-    // this.get('#/delete/post/:postId', (ctx) => {
-    //   if (!auth.isAuth()) {
-    //     ctx.redirect('#/home')
-    //     return
-    //   }
-    //
-    //   let postId = ctx.params.postId
-    //
-    //   posts.deletePost(postId)
-    //     .then(() => {
-    //       notify.showInfo('Post deleted.')
-    //       ctx.redirect('#/catalog')
-    //     })
-    //     .catch(notify.handleError)
-    // })
-    //
-    // this.get('#/posts', (ctx) => {
-    //   if (!auth.isAuth()) {
-    //     ctx.redirect('#/home')
-    //     return
-    //   }
-    //
-    //   posts.getMyPosts(sessionStorage.getItem('username'))
-    //     .then((posts) => {
-    //       posts.forEach((p, i) => {
-    //         p.rank = i + 1
-    //         p.date = calcTime(p._kmd.ect)
-    //         p.isAuthor = p._acl.creator === sessionStorage.getItem('userId')
-    //       })
-    //
-    //       ctx.isAuth = auth.isAuth()
-    //       ctx.username = sessionStorage.getItem('username')
-    //       ctx.posts = posts
-    //
-    //       ctx.loadPartials({
-    //         header: './templates/common/header.hbs',
-    //         footer: './templates/common/footer.hbs',
-    //         navigation: './templates/common/navigation.hbs',
-    //         postList: './templates/posts/postList.hbs',
-    //         post: './templates/posts/post.hbs'
-    //       }).then(function () {
-    //         this.partial('./templates/posts/myPostsPage.hbs')
-    //       })
-    //     })
-    // })
-    //
-    // this.get('#/details/:postId', (ctx) => {
-    //   let postId = ctx.params.postId
-    //
-    //   const postPromise = posts.getPostById(postId)
-    //   const allCommentsPromise = comments.getPostComments(postId)
-    //
-    //   Promise.all([postPromise, allCommentsPromise])
-    //     .then(([post, comments]) => {
-    //       post.date = calcTime(post._kmd.ect)
-    //       post.isAuthor = post._acl.creator === sessionStorage.getItem('userId')
-    //       comments.forEach((c) => {
-    //         c.date = calcTime(c._kmd.ect)
-    //         c.commentAuthor = c._acl.creator === sessionStorage.getItem('userId')
-    //       })
-    //
-    //       ctx.isAuth = auth.isAuth()
-    //       ctx.username = sessionStorage.getItem('username')
-    //       ctx.post = post
-    //       ctx.comments = comments
-    //
-    //       ctx.loadPartials({
-    //         header: './templates/common/header.hbs',
-    //         footer: './templates/common/footer.hbs',
-    //         navigation: './templates/common/navigation.hbs',
-    //         postDetails: './templates/details/postDetails.hbs',
-    //         comment: './templates/details/comment.hbs'
-    //       }).then(function () {
-    //         this.partial('./templates/details/postDetailsPage.hbs')
-    //       })
-    //     })
-    //     .catch(notify.handleError)
-    // })
-    // this.post('#/create/comment', (ctx) => {
-    //   let author = sessionStorage.getItem('username')
-    //   let content = ctx.params.content
-    //   let postId = ctx.params.postId
-    //
-    //   if (content === '') {
-    //     notify.showError('Cannot add empty comment!')
-    //     return
-    //   }
-    //
-    //   comments.createComment(postId, content, author)
-    //     .then(() => {
-    //       notify.showInfo('Comment created!')
-    //       ctx.redirect(`#/details/${postId}`)
-    //     })
-    //     .catch(notify.showError)
-    // })
-    //
-    // this.get('#/comment/delete/:commentId/post/:postId', (ctx) => {
-    //   let commentId = ctx.params.commentId
-    //   let postId = ctx.params.postId
-    //
-    //   comments.deleteComment(commentId)
-    //     .then(() => {
-    //       notify.showInfo('Comment deleted.')
-    //       ctx.redirect(`#/details/${postId}`)
-    //     })
-    //     .catch(notify.handleError)
-    // })
 
-    function getLoginPage (ctx) {
+    function getWelcomePage (ctx) {
       if (!auth.isAuth()) {
         ctx.loadPartials({
-          header: './templates/header.hbs',
-          footer: './templates/footer.hbs',
+          header: './tpl/common/header.hbs',
+          footer: './tpl/common/footer.hbs',
         }).then(function () {
-          this.partial('./templates/login.hbs')
+          this.partial('./tpl/forms/login.hbs')
         })
       } else {
-        ctx.redirect('#/catalog')
+        ctx.redirect('#/feed')
       }
-    }
-    function getRegisterPage (ctx) {
-      if (!auth.isAuth()) {
-        ctx.loadPartials({
-          header: './templates/header.hbs',
-          footer: './templates/footer.hbs',
-        }).then(function () {
-          this.partial('./templates/register.hbs')
-        })
-      } else {
-        ctx.redirect('#/catalog')
-      }
-
-    }
-
-    function postIsValid (title, url) {
-      if (title === '') {
-        notify.showError('Title is required!')
-      } else if (url === '') {
-        notify.showError('Url is required!')
-      } else if (!url.startsWith('https:')) {
-        notify.showError('Url must be a valid link!')
-      } else {
-        return true
-      }
-
-      return false
     }
 
     function calcTime (dateIsoFormat) {
@@ -336,6 +132,7 @@ $(() => {
         else return ''
       }
     }
+
   })
 
   app.run()
