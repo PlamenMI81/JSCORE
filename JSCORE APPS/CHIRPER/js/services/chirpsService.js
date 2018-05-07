@@ -9,49 +9,61 @@ let chirpsService = (() => {
   }
 
   function chirpCount (user) {
-    let endpoint=`chirps?query={"author":"${user}"}`
+    let endpoint = `chirps?query={"author":"${user}"}`
     return remote.get('appdata', endpoint, 'kinvey')
   }
 
   function followingCount (user) {
-    let endpoint=`?query={"username":"${user}"}`
+    let endpoint = `?query={"username":"${user}"}`
     return remote.get('user', endpoint, 'kinvey')
   }
 
   function followersCount (user) {
-    let endpoint=`?query={"subscriptions":"${user}"}`
+    let endpoint = `?query={"subscriptions":"${user}"}`
     return remote.get('user', endpoint, 'kinvey')
   }
 
-  function editPost (postId,data) {
-    let endpoint=`posts/${postId}`
-    return remote.update('appdata',endpoint,'kinvey',data)
+  function createChirp (text, author) {
+    return remote.post('appdata', 'chirps', 'kinvey', {text, author})
   }
 
-  function getMyPosts (username) {
-    const endpoint = `posts?query={"author":"${username}"}&sort={"_kmd.ect": -1}`
+  function chirpsByUsername (username) {
+    let endpoint=`chirps?query={"author":"${username}"}&sort={"_kmd.ect": 1}`
     return remote.get('appdata', endpoint, 'kinvey')
   }
 
-  function getPostById (id) {
-    const endpoint = `posts/${id}`
-    return remote.get('appdata', endpoint, 'kinvey')
+  function deleteChirp (id) {
+    return remote.remove('appdata', 'chirps/'+id, 'kinvey')
   }
 
-  function deletPost (id) {
-    const endpoint = `posts/${id}`
-    return remote.remove('appdata', endpoint, 'kinvey')
+  function getUsers () {
+    return remote.get('user','','kinvey')
   }
+
+  function unfollow (userId,data) {
+    return remote.update('user',userId,'kinvey',data)
+  }
+
+  function follow (userId,data) {
+    return remote.update('user',userId,'kinvey',data)
+  }
+
   return {
     chirpsBySubscription,
     getSubsc,
     chirpCount,
     followingCount,
     followersCount,
+    createChirp,
+    chirpsByUsername,
+    deleteChirp,
+    getUsers,
+    unfollow,
+    follow,
 
-    editPost,
-    getMyPosts,
-    getPostById,
-    deletPost,
+    // editPost,
+    // getMyPosts,
+    // getPostById,
+    // deletPost,
   }
 })()
