@@ -1,0 +1,22 @@
+{{> menu-r}}
+<section id="viewFlightDetails">
+    <div class="ticket-area">
+        <div class="ticket-area-left">
+            <img src="{{flights.image}}" alt="">
+        </div>
+        <div class="ticket-area-right">
+            <h3>{{flights.destination}}</h3>
+            <div>from {{flights.origin}}</div>
+            <div class="data-and-time">
+                {{flights.departure}} {{flights.time}}
+                {{#if author}}
+                    <a href="#/edit/{{flights._id}}" class="edit-flight-detail"></a>
+                {{/if}}
+            </div>
+            <div>
+                {{flights.seats}} Seats ({{flights.cost}} per seat)
+            </div>
+        </div>
+    </div>
+</section>
+{{> footer}}

@@ -1,0 +1,24 @@
+{{> menu-r}}
+<section id="viewEditFlight">
+    <h2>Edit existing flight</h2>
+    <form action="#/edit/{{flights._id}}" method="post" id="formEditFlight">
+        <label>Destination:</label>
+        <input type="text" name="destination" placeholder="Destination" value="{{flights.destination}}" >
+        <label>Origin:</label>
+        <input type="text" name="origin" placeholder="Origin" value="{{flights.origin}}">
+        <label>Departure Date:</label>
+        <input type="date" id="tt" name="departureDate" value="{{flights.departure}}">
+        <label>Departure Time:</label>
+        <input type="time" name="departureTime" value="{{flights.time}}">
+        <label>Number of Seats:</label>
+        <input type="number" name="seats" value="{{flights.seats}}">
+        <label>Cost per seat:</label>
+        <input type="number" step="2" name="cost" value="{{flights.cost}}">
+        <label>Image:</label>
+        <input type="text" name="img" value="{{flights.image}}">
+        <label>Is Public:</label>
+        <input class="checkbox" type="checkbox" name="public" {{checked}}>
+        <input type="submit" class="save-changes" value="Save Changes">
+    </form>
+</section>
+{{> footer}}
